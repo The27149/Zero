@@ -1,0 +1,197 @@
+{
+  "name": "zero",
+  "version": "0.1.0",
+  "description": "Zero - A universal, infinitely extensible JavaScript/TypeScript toolkit",
+  "author": "27149",
+  "license": "MIT",
+  "type": "module",
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./core": {
+      "import": {
+        "types": "./dist/core/index.d.ts",
+        "default": "./dist/core/index.js"
+      },
+      "require": {
+        "types": "./dist/core/index.d.cts",
+        "default": "./dist/core/index.cjs"
+      }
+    },
+    "./utils": {
+      "import": {
+        "types": "./dist/utils/index.d.ts",
+        "default": "./dist/utils/index.js"
+      },
+      "require": {
+        "types": "./dist/utils/index.d.cts",
+        "default": "./dist/utils/index.cjs"
+      }
+    },
+    "./utils/*": {
+      "import": {
+        "types": "./dist/utils/*.d.ts",
+        "default": "./dist/utils/*.js"
+      },
+      "require": {
+        "types": "./dist/utils/*.d.cts",
+        "default": "./dist/utils/*.cjs"
+      }
+    },
+    "./algorithm": {
+      "import": {
+        "types": "./dist/algorithm/index.d.ts",
+        "default": "./dist/algorithm/index.js"
+      },
+      "require": {
+        "types": "./dist/algorithm/index.d.cts",
+        "default": "./dist/algorithm/index.cjs"
+      }
+    },
+    "./algorithm/*": {
+      "import": {
+        "types": "./dist/algorithm/*.d.ts",
+        "default": "./dist/algorithm/*.js"
+      },
+      "require": {
+        "types": "./dist/algorithm/*.d.cts",
+        "default": "./dist/algorithm/*.cjs"
+      }
+    },
+    "./pattern": {
+      "import": {
+        "types": "./dist/pattern/index.d.ts",
+        "default": "./dist/pattern/index.js"
+      },
+      "require": {
+        "types": "./dist/pattern/index.d.cts",
+        "default": "./dist/pattern/index.cjs"
+      }
+    },
+    "./pattern/*": {
+      "import": {
+        "types": "./dist/pattern/*.d.ts",
+        "default": "./dist/pattern/*.js"
+      },
+      "require": {
+        "types": "./dist/pattern/*.d.cts",
+        "default": "./dist/pattern/*.cjs"
+      }
+    },
+    "./network": {
+      "import": {
+        "types": "./dist/network/index.d.ts",
+        "default": "./dist/network/index.js"
+      },
+      "require": {
+        "types": "./dist/network/index.d.cts",
+        "default": "./dist/network/index.cjs"
+      }
+    },
+    "./ui": {
+      "import": {
+        "types": "./dist/ui/index.d.ts",
+        "default": "./dist/ui/index.js"
+      },
+      "require": {
+        "types": "./dist/ui/index.d.cts",
+        "default": "./dist/ui/index.cjs"
+      }
+    },
+    "./file": {
+      "import": {
+        "types": "./dist/file/index.d.ts",
+        "default": "./dist/file/index.js"
+      },
+      "require": {
+        "types": "./dist/file/index.d.cts",
+        "default": "./dist/file/index.cjs"
+      }
+    },
+    "./platform/*": {
+      "import": {
+        "types": "./dist/platform/*.d.ts",
+        "default": "./dist/platform/*.js"
+      },
+      "require": {
+        "types": "./dist/platform/*.d.cts",
+        "default": "./dist/platform/*.cjs"
+      }
+    },
+    "./preset": {
+      "import": {
+        "types": "./dist/preset/index.d.ts",
+        "default": "./dist/preset/index.js"
+      },
+      "require": {
+        "types": "./dist/preset/index.d.cts",
+        "default": "./dist/preset/index.cjs"
+      }
+    },
+    "./framework/*": {
+      "import": {
+        "types": "./dist/framework/*/index.d.ts",
+        "default": "./dist/framework/*/index.js"
+      },
+      "require": {
+        "types": "./dist/framework/*/index.d.cts",
+        "default": "./dist/framework/*/index.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist",
+    "README.md"
+  ],
+  "sideEffects": [
+    "./dist/global.js",
+    "./dist/global.cjs"
+  ],
+  "scripts": {
+    "dev": "tsup --watch",
+    "build": "tsup",
+    "test": "vitest",
+    "test:coverage": "vitest --coverage",
+    "lint": "eslint src --ext .ts",
+    "typecheck": "tsc --noEmit",
+    "prepublishOnly": "npm run build"
+  },
+  "devDependencies": {
+    "@types/node": "^20.10.0",
+    "tsup": "^8.0.1",
+    "typescript": "^5.3.3",
+    "vitest": "^1.1.0",
+    "eslint": "^8.56.0",
+    "@typescript-eslint/eslint-plugin": "^6.15.0",
+    "@typescript-eslint/parser": "^6.15.0"
+  },
+  "keywords": [
+    "zero",
+    "toolkit",
+    "utils",
+    "utility",
+    "typescript",
+    "javascript",
+    "algorithm",
+    "design-pattern",
+    "universal"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/27149/zero.git"
+  },
+  "engines": {
+    "node": ">=16.0.0"
+  }
+}
