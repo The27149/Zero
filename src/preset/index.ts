@@ -21,7 +21,6 @@ const presets: Record<PresetName, PresetConfig> = {
    */
   default: {
     core: true,
-    utils: true,
     algorithm: ['struct'],
     pattern: ['behavioral', 'concurrency'],
     network: true,
@@ -32,7 +31,6 @@ const presets: Record<PresetName, PresetConfig> = {
    */
   minimal: {
     core: true,
-    utils: ['is', 'array', 'object'],
   },
 
   /**
@@ -40,7 +38,6 @@ const presets: Record<PresetName, PresetConfig> = {
    */
   game: {
     core: true,
-    utils: true,
     algorithm: true,
     pattern: true,
   },
@@ -50,7 +47,6 @@ const presets: Record<PresetName, PresetConfig> = {
    */
   server: {
     core: true,
-    utils: true,
     algorithm: ['struct', 'search'],
     pattern: ['creational', 'behavioral'],
     network: true,
@@ -62,7 +58,6 @@ const presets: Record<PresetName, PresetConfig> = {
    */
   mobile: {
     core: true,
-    utils: true,
     pattern: ['behavioral'],
     network: true,
     ui: true,
@@ -100,5 +95,5 @@ export function listPresets(): PresetName[] {
  * 注册自定义预设
  */
 export function registerPreset(name: string, config: PresetConfig): void {
-  ;(presets as Record<string, PresetConfig>)[name] = config
+  ; (presets as Record<string, PresetConfig>)[name] = config
 }
