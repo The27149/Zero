@@ -1,9 +1,13 @@
 /**
- * Zero Core - MathHandler
+ * Zero Core - MathUtils
  * 数学计算工具类
  */
 
-export class MathHandler {
+
+export class MathUtils {
+
+  // #region 数值范围与精度
+
   /**
    * 限制数值范围
    */
@@ -56,12 +60,9 @@ export class MathHandler {
     return Math.ceil(value * factor) / factor
   }
 
-  /**
-   * 取模 (处理负数)
-   */
-  static mod(n: number, m: number): number {
-    return ((n % m) + m) % m
-  }
+  // #endregion
+
+  // #region 角度与弧度
 
   /**
    * 角度转弧度
@@ -75,6 +76,17 @@ export class MathHandler {
    */
   static radToDeg(radians: number): number {
     return radians * (180 / Math.PI)
+  }
+
+  // #endregion
+
+  // #region 数值判断
+
+  /**
+   * 判断两个浮点数是否近似相等
+   */
+  static isAlmostEqual(a: number, b: number, epsilon: number = 1e-6): boolean {
+    return Math.abs(a - b) < epsilon
   }
 
   /**
@@ -95,13 +107,26 @@ export class MathHandler {
    * 判断是否为质数
    */
   static isPrime(n: number): boolean {
+    if (!Number.isInteger(n)) return false;
     if (n < 2) return false
     if (n === 2) return true
     if (n % 2 === 0) return false
-    for (let i = 3; i <= Math.sqrt(n); i += 2) {
+    const limit = Math.sqrt(n);
+    for (let i = 3; i <= limit; i += 2) {
       if (n % i === 0) return false
     }
     return true
+  }
+
+  // #endregion
+
+  // #region 常用算法
+
+  /**
+   * 取模 (处理负数)
+   */
+  static mod(n: number, m: number): number {
+    return ((n % m) + m) % m
   }
 
   /**
@@ -149,37 +174,9 @@ export class MathHandler {
     return b
   }
 
-  /**
-   * 数字符号
-   */
-  static sign(n: number): -1 | 0 | 1 {
-    if (n > 0) return 1
-    if (n < 0) return -1
-    return 0
-  }
+  // #endregion
 
-  /**
-   * 平滑步进 (Smooth Step)
-   */
-  static smoothStep(edge0: number, edge1: number, x: number): number {
-    const t = this.clamp((x - edge0) / (edge1 - edge0), 0, 1)
-    return t * t * (3 - 2 * t)
-  }
-
-  /**
-   * 更平滑的步进 (Smoother Step)
-   */
-  static smootherStep(edge0: number, edge1: number, x: number): number {
-    const t = this.clamp((x - edge0) / (edge1 - edge0), 0, 1)
-    return t * t * t * (t * (t * 6 - 15) + 10)
-  }
-
-  /**
-   * 判断两个浮点数是否近似相等
-   */
-  static approximately(a: number, b: number, epsilon: number = 1e-6): boolean {
-    return Math.abs(a - b) < epsilon
-  }
+  // #region 统计计算
 
   /**
    * 求和
@@ -207,28 +204,6 @@ export class MathHandler {
   }
 
   /**
-   * 众数
-   */
-  static mode(...numbers: number[]): number[] {
-    if (numbers.length === 0) return []
-    const counts = new Map<number, number>()
-    let maxCount = 0
-
-    for (const n of numbers) {
-      const count = (counts.get(n) || 0) + 1
-      counts.set(n, count)
-      if (count > maxCount) maxCount = count
-    }
-
-    const result: number[] = []
-    counts.forEach((count, n) => {
-      if (count === maxCount) result.push(n)
-    })
-
-    return result
-  }
-
-  /**
    * 方差
    */
   static variance(...numbers: number[]): number {
@@ -244,24 +219,35 @@ export class MathHandler {
     return Math.sqrt(this.variance(...numbers))
   }
 
+  // #endregion
+
+  // #region 数字符号
+
   /**
-   * 范围
+   * 数字符号
    */
-  static range(numbers: number[]): number {
-    if (numbers.length === 0) return NaN
-    return Math.max(...numbers) - Math.min(...numbers)
+  static sign(n: number): -1 | 0 | 1 {
+    if (n > 0) return 1
+    if (n < 0) return -1
+    return 0
   }
 
   /**
-   * 百分位数
+   * 平滑步进 (Smooth Step)
    */
-  static percentile(numbers: number[], p: number): number {
-    if (numbers.length === 0) return NaN
-    const sorted = [...numbers].sort((a, b) => a - b)
-    const index = (p / 100) * (sorted.length - 1)
-    const lower = Math.floor(index)
-    const upper = Math.ceil(index)
-    if (lower === upper) return sorted[lower]
-    return sorted[lower] + (sorted[upper] - sorted[lower]) * (index - lower)
+  static smoothStep(edge0: number, edge1: number, x: number): number {
+    const t = this.clamp((x - edge0) / (edge1 - edge0), 0, 1)
+    return t * t * (3 - 2 * t)
   }
+
+  /**
+   * 更平滑的步进 (Smoother Step)
+   */
+  static smootherStep(edge0: number, edge1: number, x: number): number {
+    const t = this.clamp((x - edge0) / (edge1 - edge0), 0, 1)
+    return t * t * t * (t * (t * 6 - 15) + 10)
+  }
+
+  // #endregion
+
 }

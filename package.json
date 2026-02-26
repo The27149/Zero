@@ -1,8 +1,8 @@
 {
-  "name": "zero",
+  "name": "dora-pocket",
   "version": "0.1.0",
-  "description": "Zero - A universal, infinitely extensible JavaScript/TypeScript toolkit",
-  "author": "27149",
+  "description": "dora-pocket - A universal, infinitely extensible JavaScript/TypeScript toolkit",
+  "author": "the27149",
   "license": "MIT",
   "type": "module",
   "main": "./dist/index.cjs",

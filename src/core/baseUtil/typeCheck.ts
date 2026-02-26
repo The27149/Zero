@@ -4,14 +4,10 @@
  */
 
 export class TypeCheck {
+
   private static readonly _toString = Object.prototype.toString
 
-  /**
-   * 获取值的类型标签
-   */
-  static getTag(value: unknown): string {
-    return this._toString.call(value)
-  }
+  // #region 基础类型判断
 
   /**
    * 判断是否为数组
@@ -21,7 +17,12 @@ export class TypeCheck {
   }
 
   /**
-   * 判断是否为对象 (非 null)
+   * 判断是否为对象类型 (非 null)
+   * @example
+   * TypeCheck.isObject({})           // true
+   * TypeCheck.isObject([])           // true (数组也是对象)
+   * TypeCheck.isObject(new Date())   // true
+   * TypeCheck.isObject(null)         // false
    */
   static isObject(value: unknown): value is Record<string, unknown> {
     return value !== null && typeof value === 'object'
@@ -29,6 +30,11 @@ export class TypeCheck {
 
   /**
    * 判断是否为纯对象 (由 Object 构造函数创建或原型为 null)
+   * @example
+   * TypeCheck.isPlainObject({})         // true
+   * TypeCheck.isPlainObject([])         // false (数组不是纯对象)
+   * TypeCheck.isPlainObject(new Date()) // false (Date 对象不是纯对象)
+   * TypeCheck.isPlainObject(null)       // false
    */
   static isPlainObject(value: unknown): value is Record<string, unknown> {
     if (!this.isObject(value)) return false
@@ -114,15 +120,24 @@ export class TypeCheck {
   }
 
   /**
-   * 判断是否为 Promise
+   * 判断是否为原始类型
    */
-  static isPromise<T = unknown>(value: unknown): value is Promise<T> {
-    return value instanceof Promise || (
-      this.isObject(value) &&
-      this.isFunction((value as { then?: unknown }).then) &&
-      this.isFunction((value as { catch?: unknown }).catch)
-    )
+  static isPrimitive(value: unknown): value is string | number | boolean | symbol | null | undefined | bigint {
+    return value === null || (typeof value !== 'object' && typeof value !== 'function')
   }
+
+  /**
+   * 判断是否为类数组
+   */
+  static isArrayLike(value: unknown): value is ArrayLike<unknown> {
+    if (this.isNil(value) || this.isFunction(value)) return false
+    const length = (value as { length?: unknown }).length
+    return this.isNumber(length) && length >= 0 && Number.isInteger(length)
+  }
+
+  // #endregion
+
+  // #region 内置对象判断
 
   /**
    * 判断是否为 Date
@@ -143,6 +158,17 @@ export class TypeCheck {
    */
   static isError(value: unknown): value is Error {
     return value instanceof Error
+  }
+
+  /**
+   * 判断是否为 Promise
+   */
+  static isPromise<T = unknown>(value: unknown): value is Promise<T> {
+    return value instanceof Promise || (
+      this.isObject(value) &&
+      this.isFunction((value as { then?: unknown }).then) &&
+      this.isFunction((value as { catch?: unknown }).catch)
+    )
   }
 
   /**
@@ -174,6 +200,10 @@ export class TypeCheck {
   static isWeakSet<T extends object = object>(value: unknown): value is WeakSet<T> {
     return value instanceof WeakSet
   }
+
+  // #endregion
+
+  // #region 值比较
 
   /**
    * 判断是否为空值 (null, undefined, 空字符串, 空数组, 空对象)
@@ -233,19 +263,22 @@ export class TypeCheck {
     return false
   }
 
-  /**
-   * 判断是否为原始类型
-   */
-  static isPrimitive(value: unknown): value is string | number | boolean | symbol | null | undefined | bigint {
-    return value === null || (typeof value !== 'object' && typeof value !== 'function')
-  }
+  // #endregion
+
+  // #region 工具方法
 
   /**
-   * 判断是否为类数组
+   * 获取值的类型标签
+   * @example
+   * TypeCheck.getTag({})           // '[object Object]'
+   * TypeCheck.getTag([])           // '[object Array]'
+   * TypeCheck.getTag(null)         // '[object Null]'
+   * TypeCheck.getTag(new Date())   // '[object Date]'
    */
-  static isArrayLike(value: unknown): value is ArrayLike<unknown> {
-    if (this.isNil(value) || this.isFunction(value)) return false
-    const length = (value as { length?: unknown }).length
-    return this.isNumber(length) && length >= 0 && Number.isInteger(length)
+  static getTag(value: unknown): string {
+    return this._toString.call(value)
   }
+
+  // #endregion
+
 }

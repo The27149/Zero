@@ -1,11 +1,14 @@
 /**
- * Zero Core - ObjectHandler
+ * Zero Core - ObjectUtils
  * 对象处理工具类
  */
 
-import { TypeCheck } from './TypeCheck'
+import { TypeCheck } from './typeCheck'
 
-export class ObjectHandler {
+export class ObjectUtils {
+
+  // #region 创建与复制
+
   /**
    * 深拷贝
    */
@@ -50,13 +53,6 @@ export class ObjectHandler {
   }
 
   /**
-   * 浅合并对象
-   */
-  static assign<T extends object, S extends object[]>(target: T, ...sources: S): T & S[number] {
-    return Object.assign(target, ...sources)
-  }
-
-  /**
    * 深合并对象
    */
   static merge<T extends Record<string, unknown>>(...objects: Partial<T>[]): T {
@@ -83,7 +79,30 @@ export class ObjectHandler {
   }
 
   /**
+   * 填充式合并。 只填充undefined或新值，不覆盖其他值
+   * @example
+   * ObjectUtils.defaults({ a: 1 }, { a: 10, b: 2 }, { c: 3 }) // { a: 1, b: 2, c: 3 }
+   */
+  static mergeSoft<T extends object>(obj: Partial<T>, ...sources: Partial<T>[]): T {
+    const result = { ...obj }
+    for (const source of sources) {
+      for (const key of Object.keys(source) as (keyof T)[]) {
+        if (result[key] === undefined) {
+          result[key] = source[key]
+        }
+      }
+    }
+    return result as T
+  }
+
+  // #endregion
+
+  // #region 选取与排除
+
+  /**
    * 选取指定键
+   * @example
+   * ObjectUtils.pick({ a: 1, b: 2, c: 3 }, ['a', 'c']) // { a: 1, c: 3 }
    */
   static pick<T extends object, K extends keyof T>(obj: T, keys: K[]): Pick<T, K> {
     const result = {} as Pick<T, K>
@@ -97,8 +116,20 @@ export class ObjectHandler {
 
   /**
    * 排除指定键
+   * @example
+   * ObjectUtils.omit({ a: 1, b: 2, c: 3 }, ['b']) // { a: 1, c: 3 }
+   * @param obj - 源对象
+   * @param keys - 要排除的键
+   * @param mutate - 是否修改原对象，默认 false 返回新对象
+   * @returns 根据 mutate 参数返回新对象或修改后的原对象
    */
-  static omit<T extends object, K extends keyof T>(obj: T, keys: K[]): Omit<T, K> {
+  static omit<T extends object, K extends keyof T>(obj: T, keys: K[], mutate: boolean = false): Omit<T, K> {
+    if (mutate) {
+      for (const key of keys) {
+        delete obj[key]
+      }
+      return obj
+    }
     const result = { ...obj }
     for (const key of keys) {
       delete result[key]
@@ -108,6 +139,8 @@ export class ObjectHandler {
 
   /**
    * 按条件选取
+   * @example
+   * ObjectUtils.pickBy({ a: 1, b: 2, c: 3 }, (v) => v > 1) // { b: 2, c: 3 }
    */
   static pickBy<T extends object>(
     obj: T,
@@ -124,16 +157,38 @@ export class ObjectHandler {
 
   /**
    * 按条件排除
+   * @example
+   * ObjectUtils.omitBy({ a: 1, b: 2, c: 3 }, (v) => v <= 1) // { b: 2, c: 3 }
+   * @param obj - 源对象
+   * @param predicate - 判断条件
+   * @param mutate - 是否修改原对象，默认 false 返回新对象
+   * @returns 根据 mutate 参数返回新对象或修改后的原对象
    */
   static omitBy<T extends object>(
     obj: T,
-    predicate: (value: T[keyof T], key: keyof T) => boolean
+    predicate: (value: T[keyof T], key: keyof T) => boolean,
+    mutate: boolean = false
   ): Partial<T> {
+    if (mutate) {
+      for (const key of Object.keys(obj) as (keyof T)[]) {
+        if (predicate(obj[key], key)) {
+          delete obj[key]
+        }
+      }
+      return obj
+    }
     return this.pickBy(obj, (value, key) => !predicate(value, key))
   }
 
+  // #endregion
+
+  // #region 嵌套操作
+
   /**
    * 获取嵌套属性
+   * @example
+   * ObjectUtils.get({ a: { b: { c: 1 } } }, 'a.b.c') // 1
+   * ObjectUtils.get({ a: { b: 2 } }, 'a.x.y', 'default') // 'default'
    */
   static get<T = unknown>(
     obj: unknown,
@@ -153,6 +208,8 @@ export class ObjectHandler {
 
   /**
    * 设置嵌套属性
+   * @example
+   * ObjectUtils.set({ a: 1 }, 'b.c', 2) // { a: 1, b: { c: 2 } }
    */
   static set<T extends object>(
     obj: T,
@@ -169,19 +226,22 @@ export class ObjectHandler {
 
       if (TypeCheck.isNil(next)) {
         const nextKey = keys[i + 1]
-        ;(current as Record<string | number, unknown>)[key] =
-          typeof nextKey === 'number' || /^\d+$/.test(String(nextKey)) ? [] : {}
+          ; (current as Record<string | number, unknown>)[key] =
+            typeof nextKey === 'number' || /^\d+$/.test(String(nextKey)) ? [] : {}
       }
 
       current = (current as Record<string | number, unknown>)[key]
     }
 
-    ;(current as Record<string | number, unknown>)[keys[keys.length - 1]] = value
+    ; (current as Record<string | number, unknown>)[keys[keys.length - 1]] = value
     return result
   }
 
   /**
    * 检查嵌套属性是否存在
+   * @example
+   * ObjectUtils.has({ a: { b: 1 } }, 'a.b') // true
+   * ObjectUtils.has({ a: { b: 1 } }, 'a.c') // false
    */
   static has(obj: unknown, path: string | (string | number)[]): boolean {
     const keys = TypeCheck.isArray(path) ? path : path.replace(/\[(\d+)]/g, '.$1').split('.')
@@ -213,8 +273,78 @@ export class ObjectHandler {
     return result
   }
 
+  // #endregion
+
+  // #region 遍历与转换
+
+  /**
+   * 对象遍历
+   */
+  static forEach<T extends object>(
+    obj: T,
+    fn: (value: T[keyof T], key: keyof T) => void
+  ): void {
+    for (const key of Object.keys(obj) as (keyof T)[]) {
+      fn(obj[key], key)
+    }
+  }
+
+  /**
+   * 键映射
+   * @example
+   * ObjectUtils.mapKeys({ a: 1, b: 2 }, k => k.toUpperCase()) // { A: 1, B: 2 }
+   */
+  static mapKeys<T extends object>(
+    obj: T,
+    fn: (key: keyof T, value: T[keyof T]) => string
+  ): Record<string, T[keyof T]> {
+    const result: Record<string, T[keyof T]> = {}
+    for (const key of Object.keys(obj) as (keyof T)[]) {
+      result[fn(key, obj[key])] = obj[key]
+    }
+    return result
+  }
+
+  /**
+   * 值映射
+   * @example
+   * ObjectUtils.mapValues({ a: 1, b: 2 }, v => v * 2) // { a: 2, b: 4 }
+   */
+  static mapValues<T extends object, R>(
+    obj: T,
+    fn: (value: T[keyof T], key: keyof T) => R
+  ): Record<keyof T, R> {
+    const result = {} as Record<keyof T, R>
+    for (const key of Object.keys(obj) as (keyof T)[]) {
+      result[key] = fn(obj[key], key)
+    }
+    return result
+  }
+
+  /**
+   * 反转键值
+   * @example
+   * ObjectUtils.invert({ a: 'x', b: 'y' }) // { x: 'a', y: 'b' }
+   */
+  static invert<T extends Record<string, string | number>>(
+    obj: T
+  ): Record<string, keyof T> {
+    const result: Record<string, keyof T> = {}
+    for (const key of Object.keys(obj)) {
+      result[String(obj[key])] = key
+    }
+    return result
+  }
+
+  // #endregion
+
+  // #region 结构变换
+
   /**
    * 对象扁平化
+   * @example
+   * ObjectUtils.flatten({ a: { b: { c: 1 } } }) // { 'a.b.c': 1 }
+   * ObjectUtils.flatten({ arr: [{ x: 1 }] }) // { 'arr[0].x': 1 }
    */
   static flatten(
     obj: Record<string, unknown>,
@@ -247,6 +377,9 @@ export class ObjectHandler {
 
   /**
    * 对象展开 (扁平化的逆操作)
+   * @example
+   * ObjectUtils.unflatten({ 'a.b.c': 1 }) // { a: { b: { c: 1 } } }
+   * ObjectUtils.unflatten({ 'arr[0].x': 1 }) // { arr: [{ x: 1 }] }
    */
   static unflatten(
     obj: Record<string, unknown>,
@@ -261,106 +394,6 @@ export class ObjectHandler {
     return result
   }
 
-  /**
-   * 获取所有键 (递归)
-   */
-  static keys(obj: Record<string, unknown>, prefix: string = ''): string[] {
-    const result: string[] = []
+  // #endregion
 
-    for (const key of Object.keys(obj)) {
-      const fullKey = prefix ? `${prefix}.${key}` : key
-      result.push(fullKey)
-
-      if (TypeCheck.isPlainObject(obj[key])) {
-        result.push(...this.keys(obj[key] as Record<string, unknown>, fullKey))
-      }
-    }
-
-    return result
-  }
-
-  /**
-   * 获取所有值 (递归)
-   */
-  static values(obj: Record<string, unknown>): unknown[] {
-    const result: unknown[] = []
-
-    for (const value of Object.values(obj)) {
-      if (TypeCheck.isPlainObject(value)) {
-        result.push(...this.values(value as Record<string, unknown>))
-      } else {
-        result.push(value)
-      }
-    }
-
-    return result
-  }
-
-  /**
-   * 对象映射
-   */
-  static mapKeys<T extends object>(
-    obj: T,
-    fn: (key: keyof T, value: T[keyof T]) => string
-  ): Record<string, T[keyof T]> {
-    const result: Record<string, T[keyof T]> = {}
-    for (const key of Object.keys(obj) as (keyof T)[]) {
-      result[fn(key, obj[key])] = obj[key]
-    }
-    return result
-  }
-
-  /**
-   * 值映射
-   */
-  static mapValues<T extends object, R>(
-    obj: T,
-    fn: (value: T[keyof T], key: keyof T) => R
-  ): Record<keyof T, R> {
-    const result = {} as Record<keyof T, R>
-    for (const key of Object.keys(obj) as (keyof T)[]) {
-      result[key] = fn(obj[key], key)
-    }
-    return result
-  }
-
-  /**
-   * 对象遍历
-   */
-  static forEach<T extends object>(
-    obj: T,
-    fn: (value: T[keyof T], key: keyof T) => void
-  ): void {
-    for (const key of Object.keys(obj) as (keyof T)[]) {
-      fn(obj[key], key)
-    }
-  }
-
-  /**
-   * 反转键值
-   */
-  static invert<T extends Record<string, string | number>>(
-    obj: T
-  ): Record<string, keyof T> {
-    const result: Record<string, keyof T> = {}
-    for (const key of Object.keys(obj)) {
-      result[String(obj[key])] = key
-    }
-    return result
-  }
-
-  /**
-   * 默认值填充
-   */
-  static defaults<T extends object>(obj: Partial<T>, ...sources: Partial<T>[]): T {
-    const result = { ...obj }
-    for (const source of sources) {
-      for (const key of Object.keys(source) as (keyof T)[]) {
-        if (result[key] === undefined) {
-          result[key] = source[key]
-        }
-      }
-    }
-    return result as T
-  }
 }
