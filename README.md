@@ -66,6 +66,35 @@ import { Singleton } from 'dora-pocket/pattern/creational'
 const instance = Singleton.getInstance()
 ```
 
+### CDN 动态导入
+
+通过 CDN 直接在浏览器中使用，无需安装：
+
+```typescript
+// 使用 esm.sh CDN 动态导入
+const doraPocket = await import('https://esm.sh/dora-pocket')
+
+// 使用核心模块
+doraPocket.core.arrayUtils.isArray([])
+
+// 使用算法模块
+doraPocket.algorithm.sort.quickSort([3, 1, 2])
+
+// 使用设计模式
+const { Singleton } = doraPocket.pattern.creational
+const instance = Singleton.getInstance()
+```
+
+**优势**：
+- 🚀 无需构建，直接在浏览器中使用
+- 📦 自动处理依赖和 Tree-shaking
+- 🌐 支持现代浏览器的动态导入
+- 🎯 适合快速原型开发和在线代码演示
+
+**CDN 服务商**：
+- esm.sh: `https://esm.sh/dora-pocket`
+- 支持 TypeScript 类型提示（在支持的编辑器中）
+
 ## 🔧 开发指南
 
 ### 新增模块
