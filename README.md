@@ -25,25 +25,17 @@ pnpm add dora-pocket
 
 ## 🚀 快速开始
 
-### 方式 1：探索模式（开发阶段）
-
-导入主入口，探索所有可用功能：
-
-```typescript
-import * as dp from 'dora-pocket'
-
-// IDE 会提示所有模块
-dp.core.arrayUtils.isArray([])     // 核心 - 数组工具
-dp.algorithm.sort.quickSort([3,1,2])  // 算法 - 排序
-dp.pattern.observer.subscribe()    // 设计模式 - 观察者
-```
-
-### 方式 2：按需导入（生产阶段 - 推荐）
+### 按需导入（推荐）
 
 只导入实际使用的模块，获得最佳的包体积：
 
 ```typescript
-// 导入核心模块的工具
+// 导入整个核心模块
+import * as core from 'dora-pocket/core'
+
+core.arrayUtils.isArray([])
+
+// 或从子模块导入具体功能
 import { arrayUtils, TypeCheck } from 'dora-pocket/core'
 
 arrayUtils.isArray([])
@@ -52,6 +44,11 @@ TypeCheck.isString('hello')
 
 ```typescript
 // 导入算法模块
+import * as algorithm from 'dora-pocket/algorithm'
+
+algorithm.sort.quickSort([3, 1, 2])
+
+// 或从子模块导入
 import { quickSort, mergeSort } from 'dora-pocket/algorithm/sort'
 
 quickSort([3, 1, 2])
@@ -59,9 +56,49 @@ quickSort([3, 1, 2])
 
 ```typescript
 // 导入设计模式
+import * as pattern from 'dora-pocket/pattern'
+
+pattern.creational.Singleton.getInstance()
+
+// 或从子模块导入
 import { Singleton } from 'dora-pocket/pattern/creational'
 
 const instance = Singleton.getInstance()
+```
+
+## 🔧 开发指南
+
+### 新增模块
+
+在 `src/` 目录下创建新的模块目录和 `index.ts` 文件：
+
+```bash
+src/
+├── core/
+├── algorithm/
+├── your-new-module/    # 新增模块
+│   └── index.ts
+```
+
+然后运行构建命令，脚本会自动更新导出配置：
+
+```bash
+npm run build
+```
+
+脚本会自动：
+1. 扫描 `src/` 下所有模块
+2. 更新 `src/index.ts` 的导出
+3. 更新 `package.json` 的 `exports` 字段
+
+**注意**：`src/index.ts` 和 `package.json` 的 `exports` 字段由 `scripts/update-exports.js` 自动生成，请勿手动修改。
+
+### 自动更新脚本
+
+手动运行更新脚本：
+
+```bash
+npm run update-exports
 ```
 
 ## 📁 模块概览
@@ -80,30 +117,28 @@ const instance = Singleton.getInstance()
 
 ### Tree-shaking 最佳实践
 
-**❌ 不推荐**（可能打包未使用的模块）：
-```typescript
-import * as dp from 'dora-pocket'
-dp.core.arrayUtils.isArray([])
-```
-
 **✅ 推荐**（确保只打包使用的模块）：
 ```typescript
+// 从子模块导入具体功能
 import { arrayUtils } from 'dora-pocket/core'
 arrayUtils.isArray([])
 ```
 
-### 探索与使用分离
+**✅ 可用**（导入整个模块，打包工具会分析使用的子功能）：
+```typescript
+import * as core from 'dora-pocket/core'
+core.arrayUtils.isArray([])
+```
 
-1. **开发阶段**：使用主入口探索 API
-   ```typescript
-   import * as dp from 'dora-pocket'
-   // 查看 dp 下有哪些模块
-   ```
+### 模块导入方式
 
-2. **生产阶段**：改为按需导入
-   ```typescript
-   import { 具体功能 } from 'dora-pocket/具体模块'
-   ```
+```typescript
+// ✅ 推荐：从子模块导入具体功能
+import { arrayUtils } from 'dora-pocket/core'
+
+// ✅ 可用：导入整个模块
+import * as core from 'dora-pocket/core'
+```
 
 ## ⚠️ 注意事项
 
@@ -117,15 +152,16 @@ Tree-shaking 的效果取决于：
 ### 2. 模块导入方式
 
 ```typescript
-// ✅ 推荐：从子模块导入
+// ✅ 推荐：从子模块导入具体功能
 import { arrayUtils } from 'dora-pocket/core'
 
 // ✅ 可用：导入整个模块
 import * as core from 'dora-pocket/core'
 
-// ⚠️ 可用但不推荐：从主入口导入（可能影响 Tree-shaking）
-import * as dp from 'dora-pocket'
-dp.core.arrayUtils.xxx()
+// ✅ 可用：导入多个模块
+import { core, algorithm } from 'dora-pocket'
+core.arrayUtils.isArray([])
+algorithm.sort.quickSort([3, 1, 2])
 ```
 
 ### 3. TypeScript 支持

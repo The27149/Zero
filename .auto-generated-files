@@ -1,0 +1,8 @@
+# 自动生成文件列表
+
+以下文件由脚本自动生成，请勿手动修改：
+
+- `src/index.ts` - 由 `scripts/update-exports.js` 自动生成
+- `package.json` 的 `exports` 字段 - 由 `scripts/update-exports.js` 自动生成
+
+如需修改，请修改相应的源代码或脚本，然后运行 `npm run update-exports` 重新生成。

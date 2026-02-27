@@ -1,6 +1,6 @@
 {
   "name": "dora-pocket",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "dora-pocket - A universal, infinitely extensible JavaScript/TypeScript toolkit",
   "author": "the27149",
   "license": "MIT",
@@ -19,16 +19,6 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./core": {
-      "import": {
-        "types": "./dist/core/index.d.ts",
-        "default": "./dist/core/index.js"
-      },
-      "require": {
-        "types": "./dist/core/index.d.cts",
-        "default": "./dist/core/index.cjs"
-      }
-    },
     "./algorithm": {
       "import": {
         "types": "./dist/algorithm/index.d.ts",
@@ -39,24 +29,14 @@
         "default": "./dist/algorithm/index.cjs"
       }
     },
-    "./pattern": {
+    "./core": {
       "import": {
-        "types": "./dist/pattern/index.d.ts",
-        "default": "./dist/pattern/index.js"
+        "types": "./dist/core/index.d.ts",
+        "default": "./dist/core/index.js"
       },
       "require": {
-        "types": "./dist/pattern/index.d.cts",
-        "default": "./dist/pattern/index.cjs"
-      }
-    },
-    "./network": {
-      "import": {
-        "types": "./dist/network/index.d.ts",
-        "default": "./dist/network/index.js"
-      },
-      "require": {
-        "types": "./dist/network/index.d.cts",
-        "default": "./dist/network/index.cjs"
+        "types": "./dist/core/index.d.cts",
+        "default": "./dist/core/index.cjs"
       }
     },
     "./file": {
@@ -69,14 +49,24 @@
         "default": "./dist/file/index.cjs"
       }
     },
-    "./ui": {
+    "./network": {
       "import": {
-        "types": "./dist/ui/index.d.ts",
-        "default": "./dist/ui/index.js"
+        "types": "./dist/network/index.d.ts",
+        "default": "./dist/network/index.js"
       },
       "require": {
-        "types": "./dist/ui/index.d.cts",
-        "default": "./dist/ui/index.cjs"
+        "types": "./dist/network/index.d.cts",
+        "default": "./dist/network/index.cjs"
+      }
+    },
+    "./pattern": {
+      "import": {
+        "types": "./dist/pattern/index.d.ts",
+        "default": "./dist/pattern/index.js"
+      },
+      "require": {
+        "types": "./dist/pattern/index.d.cts",
+        "default": "./dist/pattern/index.cjs"
       }
     },
     "./preset": {
@@ -88,6 +78,16 @@
         "types": "./dist/preset/index.d.cts",
         "default": "./dist/preset/index.cjs"
       }
+    },
+    "./ui": {
+      "import": {
+        "types": "./dist/ui/index.d.ts",
+        "default": "./dist/ui/index.js"
+      },
+      "require": {
+        "types": "./dist/ui/index.d.cts",
+        "default": "./dist/ui/index.cjs"
+      }
     }
   },
   "files": [
@@ -96,7 +96,8 @@
   ],
   "scripts": {
     "dev": "tsup --watch",
-    "build": "tsup",
+    "update-exports": "node scripts/update-exports.js",
+    "build": "npm run update-exports && tsup",
     "test": "vitest",
     "test:coverage": "vitest --coverage",
     "lint": "eslint src --ext .ts",
