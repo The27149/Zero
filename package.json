@@ -1,6 +1,6 @@
 {
   "name": "dora-pocket",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "description": "dora-pocket - A universal, infinitely extensible JavaScript/TypeScript toolkit",
   "author": "the27149",
   "license": "MIT",
@@ -29,26 +29,6 @@
         "default": "./dist/core/index.cjs"
       }
     },
-    "./utils": {
-      "import": {
-        "types": "./dist/utils/index.d.ts",
-        "default": "./dist/utils/index.js"
-      },
-      "require": {
-        "types": "./dist/utils/index.d.cts",
-        "default": "./dist/utils/index.cjs"
-      }
-    },
-    "./utils/*": {
-      "import": {
-        "types": "./dist/utils/*.d.ts",
-        "default": "./dist/utils/*.js"
-      },
-      "require": {
-        "types": "./dist/utils/*.d.cts",
-        "default": "./dist/utils/*.cjs"
-      }
-    },
     "./algorithm": {
       "import": {
         "types": "./dist/algorithm/index.d.ts",
@@ -57,16 +37,6 @@
       "require": {
         "types": "./dist/algorithm/index.d.cts",
         "default": "./dist/algorithm/index.cjs"
-      }
-    },
-    "./algorithm/*": {
-      "import": {
-        "types": "./dist/algorithm/*.d.ts",
-        "default": "./dist/algorithm/*.js"
-      },
-      "require": {
-        "types": "./dist/algorithm/*.d.cts",
-        "default": "./dist/algorithm/*.cjs"
       }
     },
     "./pattern": {
@@ -79,16 +49,6 @@
         "default": "./dist/pattern/index.cjs"
       }
     },
-    "./pattern/*": {
-      "import": {
-        "types": "./dist/pattern/*.d.ts",
-        "default": "./dist/pattern/*.js"
-      },
-      "require": {
-        "types": "./dist/pattern/*.d.cts",
-        "default": "./dist/pattern/*.cjs"
-      }
-    },
     "./network": {
       "import": {
         "types": "./dist/network/index.d.ts",
@@ -97,16 +57,6 @@
       "require": {
         "types": "./dist/network/index.d.cts",
         "default": "./dist/network/index.cjs"
-      }
-    },
-    "./ui": {
-      "import": {
-        "types": "./dist/ui/index.d.ts",
-        "default": "./dist/ui/index.js"
-      },
-      "require": {
-        "types": "./dist/ui/index.d.cts",
-        "default": "./dist/ui/index.cjs"
       }
     },
     "./file": {
@@ -119,14 +69,14 @@
         "default": "./dist/file/index.cjs"
       }
     },
-    "./platform/*": {
+    "./ui": {
       "import": {
-        "types": "./dist/platform/*.d.ts",
-        "default": "./dist/platform/*.js"
+        "types": "./dist/ui/index.d.ts",
+        "default": "./dist/ui/index.js"
       },
       "require": {
-        "types": "./dist/platform/*.d.cts",
-        "default": "./dist/platform/*.cjs"
+        "types": "./dist/ui/index.d.cts",
+        "default": "./dist/ui/index.cjs"
       }
     },
     "./preset": {
@@ -138,25 +88,11 @@
         "types": "./dist/preset/index.d.cts",
         "default": "./dist/preset/index.cjs"
       }
-    },
-    "./framework/*": {
-      "import": {
-        "types": "./dist/framework/*/index.d.ts",
-        "default": "./dist/framework/*/index.js"
-      },
-      "require": {
-        "types": "./dist/framework/*/index.d.cts",
-        "default": "./dist/framework/*/index.cjs"
-      }
     }
   },
   "files": [
     "dist",
     "README.md"
-  ],
-  "sideEffects": [
-    "./dist/global.js",
-    "./dist/global.cjs"
   ],
   "scripts": {
     "dev": "tsup --watch",
@@ -177,7 +113,7 @@
     "@typescript-eslint/parser": "^6.15.0"
   },
   "keywords": [
-    "zero",
+    "dora-pocket",
     "toolkit",
     "utils",
     "utility",
@@ -189,7 +125,7 @@
   ],
   "repository": {
     "type": "git",
-    "url": "https://github.com/27149/zero.git"
+    "url": "https://github.com/27149/dora-pocket.git"
   },
   "engines": {
     "node": ">=16.0.0"

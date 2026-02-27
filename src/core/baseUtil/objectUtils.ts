@@ -3,7 +3,7 @@
  * 对象处理工具类
  */
 
-import { TypeCheck } from './typeCheck'
+import { TypeCheck } from './typeCheck';
 
 export class ObjectUtils {
 
@@ -13,6 +13,7 @@ export class ObjectUtils {
    * 深拷贝
    */
   static deepClone<T>(value: T): T {
+    if (!!structuredClone) return structuredClone(value);
     if (TypeCheck.isNil(value) || typeof value !== 'object') {
       return value
     }
@@ -53,7 +54,7 @@ export class ObjectUtils {
   }
 
   /**
-   * 深合并对象
+   * 合并对象
    */
   static merge<T extends Record<string, unknown>>(...objects: Partial<T>[]): T {
     const result: Record<string, unknown> = {}
