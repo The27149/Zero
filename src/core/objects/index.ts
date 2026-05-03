@@ -3,4 +3,4 @@
  * 日期工具模块入口
  */
 
-export { DateUtilsClass as DateUtils } from '../baseUtil/timeUtils'
+export { timeUtils as DateUtils } from '../baseUtil/timeUtils'

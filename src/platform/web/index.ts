@@ -137,10 +137,10 @@ export const event = {
   /**
    * 一次性事件
    */
-  once<K extends keyof HTMLElementEventMap>(
+  once<K extends keyof ElementEventMap>(
     el: Element,
     eventType: K,
-    handler: (e: HTMLElementEventMap[K]) => void
+    handler: (e: ElementEventMap[K]) => void
   ): void {
     el.addEventListener(eventType, handler, { once: true })
   },

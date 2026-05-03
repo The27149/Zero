@@ -23,9 +23,6 @@
         "src/*"
       ]
     },
-    "types": [
-      "node"
-    ],
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noUnusedLocals": true,
